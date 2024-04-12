@@ -1,0 +1,55 @@
+/* You can add global styles to this file, and also import other style files */
+/* Add application styles & imports to this file! */
+
+@use "styles/button";
+@use "styles/colors";
+
+@include button.button();
+
+header {
+  text-align: center;
+  font-size: 16pt;
+  font-weight: bold;
+  padding: 8px;
+  margin-bottom: 8px;
+  color: white;
+  background: var(--red-to-pink-to-purple-horizontal-gradient);
+}
+
+body {
+  font-family: sans-serif;
+}
+
+h2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+fieldset {
+  padding: 12px;
+  border-image: var(--red-to-pink-to-purple-horizontal-gradient) 1;
+}
+
+hr {
+  border-radius: 8px;
+  height: 8px;
+  background: var(--red-to-pink-to-purple-horizontal-gradient);
+  border: none;
+}
+
+pre {
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.twitter {
+  background: var(--red-to-pink-to-purple-horizontal-gradient);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-decoration: underline;
+
+  a {
+    font-weight: bold;
+  }
+}
