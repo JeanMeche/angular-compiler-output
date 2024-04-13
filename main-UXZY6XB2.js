@@ -147,8 +147,7 @@ ${p}`}return a}function zI(t){let e=fte(t);return UI(e).then(n=>wv(n,{lang:"java
 @if(isVisible) {
   <span>Some other</span>
 }
-  <div>OK</div>
-<span *ngIf="isVisible">Some other</span>`,gte=`
+  <div>OK</div>`,gte=`
 <div>For loops examples</div>
 @for(item of [1,2,3,4]; track $index) {
   <span>{{item}}</span>
