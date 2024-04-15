@@ -70,6 +70,8 @@ import {Template, templates} from './templates';
           <li>The compiler loves to fail silently</li> 
           <li>Probably some other issues...</li>
         </ul>
+        <h2>More on the Angular compiler</h2>
+        <p>Have a look at <a href="https://www.youtube.com/watch?v=S0o-4yc2n-8">this talk</a> by Kara Erickson at Angular Connect 2019</p>
       </div>
 
       <br><br><br>
