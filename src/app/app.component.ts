@@ -3,16 +3,19 @@ import {
   Component,
   effect,
   ElementRef,
+  inject,
   signal,
   VERSION,
   viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon, MatIconRegistry } from '@angular/material/icon';
 
 import { compileFormatAndHighlight } from './compile';
 import { formatAngularTemplate } from './prettier';
 import { Template, templates } from './templates';
+import { unzip, zip } from './zip';
 
 // Please don't blame for what you're gonna read
 
@@ -60,6 +63,13 @@ import { Template, templates } from './templates';
           >
             Prettify
           </button>
+          <button
+            class="docs-primary-btn"
+            [attr.text]="'Share Example'"
+            (click)="save()"
+          >
+            Share example
+          </button>
         </div>
         <textarea
           cols="80"
@@ -73,7 +83,7 @@ import { Template, templates } from './templates';
       @if (errors().length > 0) {
         <section class="error">
           @for (error of errors(); track error) {
-            <div>L{{error.line}}: {{ error.message }}</div>
+            <div>L{{ error.line }}: {{ error.message }}</div>
           }
         </section>
       }
@@ -120,10 +130,12 @@ import { Template, templates } from './templates';
 })
 export class AppComponent {
   protected readonly version = VERSION.full;
+  protected readonly router = inject(Router);
+  protected readonly activatedRoute = inject(ActivatedRoute);
 
   protected readonly templates = templates;
   protected readonly template = signal(templates[0].content);
-  protected readonly errors = signal<{message:string, line: number}[]>([]);
+  protected readonly errors = signal<{ message: string; line: number }[]>([]);
   protected readonly currentTemplate = signal(templates[0].label);
   protected readonly compilerOutput = viewChild.required('compilerOutput', {
     read: ElementRef,
@@ -133,6 +145,13 @@ export class AppComponent {
     this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
     effect(() => {
       this.compileTemplate(this.template());
+    });
+
+    this.activatedRoute.queryParams.subscribe((params) => {
+      if (params['template']) {
+        this.selectCustom();
+        this.template.set(unzip(params['template']));
+      }
     });
   }
 
@@ -158,5 +177,11 @@ export class AppComponent {
   async pretty() {
     const newTemplateStr = await formatAngularTemplate(this.template());
     this.template.set(newTemplateStr);
+  }
+
+  save() {
+    this.router.navigate([], {
+      queryParams: { template: zip(this.template()) },
+    });
   }
 }
