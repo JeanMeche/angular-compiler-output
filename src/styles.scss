@@ -42,6 +42,10 @@ hr {
   border: none;
 }
 
+.error {
+  color: var(--hot-red);
+}
+
 textarea {
   flex: 1;
 }

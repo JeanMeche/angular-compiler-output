@@ -1,10 +1,15 @@
 import * as ng from '@angular/compiler';
-import {codeToHtml} from 'shiki';
+import { codeToHtml } from 'shiki';
 
-import {formatJs} from './prettier';
-import {Context, Printer} from './printer';
+import { formatJs } from './prettier';
+import { Context, Printer } from './printer';
 
-export function compileTemplate(templateStr: string): string {
+interface CompileOutput {
+  output: string;
+  errors: ng.ParseError[] | null;
+}
+
+export function compileTemplate(templateStr: string): CompileOutput {
   const constantPool = new ng.ConstantPool();
   const template = ng.parseTemplate(templateStr, 'template.html', {
     preserveWhitespaces: false,
@@ -13,57 +18,61 @@ export function compileTemplate(templateStr: string): string {
   const CMP_NAME = 'TestCmp';
 
   const out = ng.compileComponentFromMetadata(
-      {
-        name: CMP_NAME,
-        isStandalone: true,
-        selector: 'test-cmp',
-        host: {
-          attributes: {},
-          listeners: {},
-          properties: {},
-          specialAttributes: {},
-        },
-        inputs: {},
-        outputs: {},
-        lifecycle: {
-          usesOnChanges: false,
-        },
-        hostDirectives: null,
-        declarations: [],
-        declarationListEmitMode: ng.DeclarationListEmitMode.Direct,
-        deps: [],
-        animations: null,
-        defer: {
-          dependenciesFn: null,
-          mode: ng.DeferBlockDepsEmitMode.PerComponent,
-        },
-        i18nUseExternalIds: false,
-        interpolation: ng.DEFAULT_INTERPOLATION_CONFIG,
-        isSignal: false,
-        providers: null,
-        queries: [],
-        styles: [],
-        template,
-        encapsulation: ng.ViewEncapsulation.Emulated,
-        exportAs: null,
-        fullInheritance: false,
-        changeDetection: null,
-        relativeContextFilePath: 'template.html',
-        type: {
-          value: new ng.WrappedNodeExpr(CMP_NAME),
-          type: new ng.WrappedNodeExpr(CMP_NAME),
-        },
-        typeArgumentCount: 0,
-        typeSourceSpan: null!,
-        usesInheritance: false,
-        viewProviders: null,
-        viewQueries: [],
+    {
+      name: CMP_NAME,
+      isStandalone: true,
+      selector: 'test-cmp',
+      host: {
+        attributes: {},
+        listeners: {},
+        properties: {},
+        specialAttributes: {},
       },
-      constantPool, ng.makeBindingParser(ng.DEFAULT_INTERPOLATION_CONFIG));
+      inputs: {},
+      outputs: {},
+      lifecycle: {
+        usesOnChanges: false,
+      },
+      hostDirectives: null,
+      declarations: [],
+      declarationListEmitMode: ng.DeclarationListEmitMode.Direct,
+      deps: [],
+      animations: null,
+      defer: {
+        dependenciesFn: null,
+        mode: ng.DeferBlockDepsEmitMode.PerComponent,
+      },
+      i18nUseExternalIds: false,
+      interpolation: ng.DEFAULT_INTERPOLATION_CONFIG,
+      isSignal: false,
+      providers: null,
+      queries: [],
+      styles: [],
+      template,
+      encapsulation: ng.ViewEncapsulation.Emulated,
+      exportAs: null,
+      fullInheritance: false,
+      changeDetection: null,
+      relativeContextFilePath: 'template.html',
+      type: {
+        value: new ng.WrappedNodeExpr(CMP_NAME),
+        type: new ng.WrappedNodeExpr(CMP_NAME),
+      },
+      typeArgumentCount: 0,
+      typeSourceSpan: null!,
+      usesInheritance: false,
+      viewProviders: null,
+      viewQueries: [],
+    },
+    constantPool,
+    ng.makeBindingParser(ng.DEFAULT_INTERPOLATION_CONFIG),
+  );
 
   const printer = new Printer();
-  let strExpression =
-      out.expression.visitExpression(printer, new Context(false));
+  let strExpression = out.expression.visitExpression(
+    printer,
+    new Context(false),
+  );
 
   for (const stmt of constantPool.statements) {
     const strStmt = stmt.visitStatement(printer, new Context(true));
@@ -71,18 +80,19 @@ export function compileTemplate(templateStr: string): string {
     strExpression += `\n\n${strStmt}`;
   }
 
-  return strExpression;
+  return { output: strExpression, errors: template.errors };
 }
 
+export async function compileFormatAndHighlight(
+  template: string,
+): Promise<CompileOutput> {
+  const { output: unformated, errors } = compileTemplate(template);
 
-
-export function compileFormatAndHighlight(template: string): Promise<string> {
-  const unformated = compileTemplate(template);
-
-  return formatJs(unformated).then((str) => {
-    return codeToHtml(str, {
-      lang: 'javascript',
-      theme: 'github-dark',
-    });
+  const formatted = await formatJs(unformated);
+  const highlighted = await codeToHtml(formatted, {
+    lang: 'javascript',
+    theme: 'github-dark',
   });
+
+  return { output: highlighted, errors };
 }
