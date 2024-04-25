@@ -3,6 +3,8 @@ import {
   Component,
   effect,
   ElementRef,
+  Host,
+  HostListener,
   inject,
   signal,
   VERSION,
@@ -119,6 +121,7 @@ import { unzip, zip } from './zip';
         </div>
 
         <br /><br /><br />
+        <p>Repo <a href="https://github.com/jeanmeche/angular-compiler-output">here</a></p>
         <span class="twitter">
           Built by
           <a href="https://twitter.com/Jean__meche">&#64;JeanMeche</a> with the
@@ -183,5 +186,13 @@ export class AppComponent {
     this.router.navigate([], {
       queryParams: { template: zip(this.template()) },
     });
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  handleKeyboardEvent(event: KeyboardEvent) {
+    if (event.key === 's' && (event.metaKey || event.ctrlKey)) {
+      event.preventDefault();
+      this.save();
+    }
   }
 }
