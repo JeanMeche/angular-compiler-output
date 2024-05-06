@@ -110,7 +110,7 @@ import { unzip, zip } from './zip';
           <ul>
             <li>&#64;Defer is not supported yet</li>
             <li>i18n is not supported yet</li>
-            <li>Probably some other issues...</li>
+            <li><a href="https://github.com/JeanMeche/angular-compiler-output/issues">Probably some other issues</a>...</li>
           </ul>
           <h2>More on the Angular compiler</h2>
           <p>
