@@ -17,7 +17,7 @@ export const templates: Template[] = [
   { label: '@for vs ngFor', content: forLoopsTemplate },
   { label: 'ngIf/else w/ template reference', content: ifElseReferenceTemplate },
   { label: 'event bindings', content: eventBindingsTemplate },
-  { label: 'ng-model', content: NgModelTemplate },
+  // { label: 'ng-model', content: NgModelTemplate }, // @see: https://github.com/JeanMeche/angular-compiler-output/issues/2
   { label: 'async pipe', content: asyncPipeTemplate },
   { label: 'child component', content: childComponentTemplate },
 ];
