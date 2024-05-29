@@ -1,8 +1,17 @@
 import * as ng from '@angular/compiler';
-import { codeToHtml } from 'shiki';
+import { HighlighterGeneric, getHighlighter } from 'shiki';
 
 import { formatJs } from './prettier';
 import { Context, Printer } from './printer';
+
+let highlighter: HighlighterGeneric<any, any>;
+
+export async function initHightlighter() {
+  highlighter = await getHighlighter({
+    themes: ['github-dark'],
+    langs: ['javascript'],
+  });
+}
 
 interface CompileOutput {
   output: string;
@@ -89,7 +98,7 @@ export async function compileFormatAndHighlight(
   const { output: unformated, errors } = compileTemplate(template);
 
   const formatted = await formatJs(unformated);
-  const highlighted = await codeToHtml(formatted, {
+  const highlighted = highlighter.codeToHtml(formatted, {
     lang: 'javascript',
     theme: 'github-dark',
   });

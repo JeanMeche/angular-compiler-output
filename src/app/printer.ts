@@ -54,15 +54,16 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     varStmt += ' ' + stmt.name;
     if (stmt.value) {
       varStmt +=
-          ' = ' + stmt.value.visitExpression(this, context.withExpressionMode);
+        ' = ' + stmt.value.visitExpression(this, context.withExpressionMode);
     }
     return this.attachComments(varStmt, stmt.leadingComments);
   }
 
-  visitDeclareFunctionStmt(stmt: ng.DeclareFunctionStmt, context: Context):
-      string {
-    let fn =
-        `function ${stmt.name}(${stmt.params.map((p) => p.name).join(', ')}) {`;
+  visitDeclareFunctionStmt(
+    stmt: ng.DeclareFunctionStmt,
+    context: Context,
+  ): string {
+    let fn = `function ${stmt.name}(${stmt.params.map((p) => p.name).join(', ')}) {`;
     fn += this.visitStatements(stmt.statements, context.withStatementMode);
     fn += '}';
     return this.attachComments(fn, stmt.leadingComments);
@@ -70,22 +71,28 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
 
   visitExpressionStmt(stmt: ng.ExpressionStatement, context: Context): string {
     return this.attachComments(
-        stmt.expr.visitExpression(this, context.withStatementMode) + ';',
-        stmt.leadingComments);
+      stmt.expr.visitExpression(this, context.withStatementMode) + ';',
+      stmt.leadingComments,
+    );
   }
 
   visitReturnStmt(stmt: ng.ReturnStatement, context: Context): string {
     return this.attachComments(
-        'return ' +
-            stmt.value.visitExpression(this, context.withExpressionMode) + ';',
-        stmt.leadingComments);
+      'return ' +
+        stmt.value.visitExpression(this, context.withExpressionMode) +
+        ';',
+      stmt.leadingComments,
+    );
   }
 
   visitIfStmt(stmt: ng.IfStmt, context: Context): string {
+    console.log(stmt);
     let ifStmt = 'if (';
     ifStmt += stmt.condition.visitExpression(this, context);
-    ifStmt += ') {' +
-        this.visitStatements(stmt.trueCase, context.withStatementMode) + '}';
+    ifStmt +=
+      ') {' +
+      this.visitStatements(stmt.trueCase, context.withStatementMode) +
+      '}';
     if (stmt.falseCase.length > 0) {
       ifStmt += ' else {';
       ifStmt += this.visitStatements(stmt.falseCase, context.withStatementMode);
@@ -99,8 +106,7 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   }
 
   visitWriteVarExpr(expr: ng.WriteVarExpr, context: Context): string {
-    const assignment =
-        `${expr.name} = ${expr.value.visitExpression(this, context)}`;
+    const assignment = `${expr.name} = ${expr.value.visitExpression(this, context)}`;
     return context.isStatement ? assignment : `(${assignment})`;
   }
 
@@ -119,17 +125,23 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     return `${receiver}.${expr.name} = ${value}`;
   }
 
-  visitInvokeFunctionExpr(ast: ng.InvokeFunctionExpr, context: Context):
-      string {
+  visitInvokeFunctionExpr(
+    ast: ng.InvokeFunctionExpr,
+    context: Context,
+  ): string {
     const fn = ast.fn.visitExpression(this, context);
     const args = ast.args.map((arg) => arg.visitExpression(this, context));
     return this.setSourceMapRange(
-        // TODO: purity (ast.pure)
-        `${fn}(${args.join(', ')})`, ast.sourceSpan);
+      // TODO: purity (ast.pure)
+      `${fn}(${args.join(', ')})`,
+      ast.sourceSpan,
+    );
   }
 
-  visitTaggedTemplateExpr(ast: ng.TaggedTemplateExpr, context: Context):
-      string {
+  visitTaggedTemplateExpr(
+    ast: ng.TaggedTemplateExpr,
+    context: Context,
+  ): string {
     throw new Error('only important for i18n');
     // return this.setSourceMapRange(
     //   this.createTaggedTemplateExpression(
@@ -160,7 +172,7 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   visitLiteralExpr(ast: ng.LiteralExpr, _context: Context): string {
     let value: string;
     if (typeof ast.value === 'string') {
-      value = `'${ast.value.replaceAll(`'`, `\\'`).replaceAll('\n', '\\n')}'`
+      value = `'${ast.value.replaceAll(`'`, `\\'`).replaceAll('\n', '\\n')}'`;
     } else if (ast.value === undefined) {
       value = 'undefined';
     } else if (ast.value === null) {
@@ -328,8 +340,12 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     }
 
     return (
-        cond + ' ? ' + ast.trueCase.visitExpression(this, context) + ' : ' +
-        ast.falseCase!.visitExpression(this, context));
+      cond +
+      ' ? ' +
+      ast.trueCase.visitExpression(this, context) +
+      ' : ' +
+      ast.falseCase!.visitExpression(this, context)
+    );
   }
 
   visitDynamicImportExpr(ast: ng.DynamicImportExpr, context: any) {
@@ -362,16 +378,20 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     return `(${params}) => ${body}`;
   }
 
-  visitBinaryOperatorExpr(ast: ng.BinaryOperatorExpr, context: Context):
-      string {
+  visitBinaryOperatorExpr(
+    ast: ng.BinaryOperatorExpr,
+    context: Context,
+  ): string {
     if (!BINARY_OPERATORS.has(ast.operator)) {
       throw new Error(
-          `Unknown binary operator: ${ng.BinaryOperator[ast.operator]}`);
+        `Unknown binary operator: ${ng.BinaryOperator[ast.operator]}`,
+      );
     }
     return (
-        ast.lhs.visitExpression(this, context) +
-        BINARY_OPERATORS.get(ast.operator)! +
-        ast.rhs.visitExpression(this, context));
+      ast.lhs.visitExpression(this, context) +
+      BINARY_OPERATORS.get(ast.operator)! +
+      ast.rhs.visitExpression(this, context)
+    );
   }
 
   visitReadPropExpr(ast: ng.ReadPropExpr, context: Context): string {
@@ -385,9 +405,12 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   }
 
   visitLiteralArrayExpr(ast: ng.LiteralArrayExpr, context: Context): string {
-    const entries = ast.entries.map(
-        (expr) => this.setSourceMapRange(
-            expr.visitExpression(this, context), ast.sourceSpan));
+    const entries = ast.entries.map((expr) =>
+      this.setSourceMapRange(
+        expr.visitExpression(this, context),
+        ast.sourceSpan,
+      ),
+    );
     return '[' + entries.join(', ') + ']';
   }
 
@@ -400,15 +423,19 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
       return key + ': ' + entry.value.visitExpression(this, context);
     });
     return this.setSourceMapRange(
-        '{' + properties.join(', ') + '}', ast.sourceSpan);
+      '{' + properties.join(', ') + '}',
+      ast.sourceSpan,
+    );
   }
 
   visitCommaExpr(ast: ng.CommaExpr, context: Context): never {
     throw new Error('Method not implemented.');
   }
 
-  visitWrappedNodeExpr(ast: ng.WrappedNodeExpr<string>, _context: Context):
-      string {
+  visitWrappedNodeExpr(
+    ast: ng.WrappedNodeExpr<string>,
+    _context: Context,
+  ): string {
     return ast.node;
   }
 
@@ -419,28 +446,36 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   visitUnaryOperatorExpr(ast: ng.UnaryOperatorExpr, context: Context): string {
     if (!UNARY_OPERATORS.has(ast.operator)) {
       throw new Error(
-          `Unknown unary operator: ${ng.UnaryOperator[ast.operator]}`);
+        `Unknown unary operator: ${ng.UnaryOperator[ast.operator]}`,
+      );
     }
     return (
-        UNARY_OPERATORS.get(ast.operator)! +
-        ast.expr.visitExpression(this, context));
+      UNARY_OPERATORS.get(ast.operator)! +
+      ast.expr.visitExpression(this, context)
+    );
   }
 
-  private visitStatements(statements: ng.Statement[], context: Context):
-      string {
-    return statements.map((stmt) => stmt.visitStatement(this, context))
-        .filter((stmt) => stmt !== undefined)
-        .join('\n');
+  private visitStatements(
+    statements: ng.Statement[],
+    context: Context,
+  ): string {
+    return statements
+      .map((stmt) => stmt.visitStatement(this, context))
+      .filter((stmt) => stmt !== undefined)
+      .join('\n');
   }
 
-  private setSourceMapRange(ast: string, span: ng.ParseSourceSpan|null):
-      string {
+  private setSourceMapRange(
+    ast: string,
+    span: ng.ParseSourceSpan | null,
+  ): string {
     return ast;
   }
 
   private attachComments(
-      statement: string,
-      leadingComments: ng.LeadingComment[]|undefined): string {
+    statement: string,
+    leadingComments: ng.LeadingComment[] | undefined,
+  ): string {
     // if (leadingComments !== undefined) {
     //   this.factory.attachComments(statement, leadingComments);
     // }
