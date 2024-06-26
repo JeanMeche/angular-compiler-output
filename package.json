@@ -10,7 +10,7 @@
   },
   "private": true,
   "dependencies": {
-    "@angular/animations": "angular/animations-builds",   
+    "@angular/animations": "^18",   
     "@angular/cdk": "angular/cdk-builds",
     "@angular/common": "angular/common-builds",
     "@angular/compiler": "angular/compiler-builds",

@@ -7,6 +7,7 @@ import { ifElseReferenceTemplate } from "./if-else-reference";
 import { ifThenElseTemplate } from "./if-then-else";
 import { nestedNodesTemplate } from "./nested-nodes";
 import { NgModelTemplate } from "./ng-model";
+import { simpleAtLet } from "./simple-at-let";
 
 export type Template = Record<'label' | 'content', string>;
 
@@ -20,4 +21,5 @@ export const templates: Template[] = [
   // { label: 'ng-model', content: NgModelTemplate }, // @see: https://github.com/JeanMeche/angular-compiler-output/issues/2
   { label: 'async pipe', content: asyncPipeTemplate },
   { label: 'child component', content: childComponentTemplate },
+  { label: 'simple @let', content: simpleAtLet}
 ];
