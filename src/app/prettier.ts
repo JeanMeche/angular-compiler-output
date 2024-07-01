@@ -14,7 +14,7 @@ export async function formatJs(code: string): Promise<string> {
 
 export async function formatAngularTemplate(template: string): Promise<string> {
   return prettier.format(template, {
-    parser: 'html',
+    parser: 'angular',
     plugins: [parserHtml],
   });
 }
