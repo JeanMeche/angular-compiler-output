@@ -3,7 +3,6 @@ import {
   Component,
   effect,
   ElementRef,
-  Host,
   HostListener,
   inject,
   signal,
@@ -12,7 +11,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatIcon, MatIconRegistry } from '@angular/material/icon';
+import { MatIcon } from '@angular/material/icon';
 
 import { compileFormatAndHighlight } from './compile';
 import { formatAngularTemplate } from './prettier';
@@ -110,7 +109,12 @@ import { unzip, zip } from './zip';
           <ul>
             <li>&#64;Defer is not supported yet</li>
             <li>i18n is not supported yet</li>
-            <li><a href="https://github.com/JeanMeche/angular-compiler-output/issues">Probably some other issues</a>...</li>
+            <li>
+              <a
+                href="https://github.com/JeanMeche/angular-compiler-output/issues"
+                >Probably some other issues</a
+              >...
+            </li>
           </ul>
           <h2>More on the Angular compiler</h2>
           <p>
@@ -121,7 +125,12 @@ import { unzip, zip } from './zip';
         </div>
 
         <br /><br /><br />
-        <p>Repo <a href="https://github.com/jeanmeche/angular-compiler-output">here</a></p>
+        <p>
+          Repo
+          <a href="https://github.com/jeanmeche/angular-compiler-output"
+            >here</a
+          >
+        </p>
         <span class="twitter">
           Built by
           <a href="https://twitter.com/Jean__meche">&#64;JeanMeche</a> with the
@@ -144,8 +153,7 @@ export class AppComponent {
     read: ElementRef,
   });
 
-  constructor(private matIconReg: MatIconRegistry) {
-    this.matIconReg.setDefaultFontSetClass('material-symbols-outlined');
+  constructor() {
     effect(() => {
       this.compileTemplate(this.template());
     });

@@ -86,7 +86,6 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   }
 
   visitIfStmt(stmt: ng.IfStmt, context: Context): string {
-    console.log(stmt);
     let ifStmt = 'if (';
     ifStmt += stmt.condition.visitExpression(this, context);
     ifStmt +=
@@ -390,7 +389,9 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     return (
       ast.lhs.visitExpression(this, context) +
       BINARY_OPERATORS.get(ast.operator)! +
-      ast.rhs.visitExpression(this, context)
+      '(' +
+      ast.rhs.visitExpression(this, context) +
+      ')'
     );
   }
 

@@ -1,4 +1,5 @@
 import { asyncPipeTemplate } from "./async-pipe";
+import { bananaBoxTemplate } from "./banana";
 import { childComponentTemplate } from "./child-component";
 import { defaultTemplate } from "./default";
 import { eventBindingsTemplate } from "./event-bindings";
@@ -18,8 +19,9 @@ export const templates: Template[] = [
   { label: '@for vs ngFor', content: forLoopsTemplate },
   { label: 'ngIf/else w/ template reference', content: ifElseReferenceTemplate },
   { label: 'event bindings', content: eventBindingsTemplate },
-  // { label: 'ng-model', content: NgModelTemplate }, // @see: https://github.com/JeanMeche/angular-compiler-output/issues/2
+  { label: 'ng-model', content: NgModelTemplate },
   { label: 'async pipe', content: asyncPipeTemplate },
   { label: 'child component', content: childComponentTemplate },
-  { label: 'simple @let', content: simpleAtLet}
+  { label: 'simple @let', content: simpleAtLet},
+  { label: 'double binding (banna in a box)', content: bananaBoxTemplate },
 ];
