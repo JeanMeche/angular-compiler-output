@@ -8,6 +8,15 @@
 
 @include button.button();
 
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
 header {
   text-align: center;
   font-size: 16pt;
@@ -164,11 +173,9 @@ pre {
   }
 }
 
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+.mat-typography {
+  font:
+    400 1rem / 1.5rem Roboto,
+    sans-serif;
+  letter-spacing: 0.031rem;
 }

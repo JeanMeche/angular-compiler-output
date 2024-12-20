@@ -5,6 +5,7 @@ import {
   ElementRef,
   HostListener,
   inject,
+  resource,
   signal,
   VERSION,
   viewChild,
@@ -17,6 +18,7 @@ import { compileFormatAndHighlight } from './compile';
 import { formatAngularTemplate } from './prettier';
 import { Template, templates } from './templates';
 import { unzip, zip } from './zip';
+import { DomSanitizer } from '@angular/platform-browser';
 
 // Please don't blame for what you're gonna read
 
@@ -88,7 +90,7 @@ import { unzip, zip } from './zip';
           }
         </section>
       }
-      <div #compilerOutput></div>
+      <div [innerHTML]="compiledTemplate.value()?.output"></div>
       <code>renderFlag: 1=create, 2=update</code>
 
       <hr />
@@ -144,20 +146,20 @@ export class AppComponent {
   protected readonly version = VERSION.full;
   protected readonly router = inject(Router);
   protected readonly activatedRoute = inject(ActivatedRoute);
+  protected readonly sanitzer = inject(DomSanitizer);
 
   protected readonly templates = templates;
   protected readonly template = signal(templates[0].content);
   protected readonly errors = signal<{ message: string; line: number }[]>([]);
   protected readonly currentTemplate = signal(templates[0].label);
-  protected readonly compilerOutput = viewChild.required('compilerOutput', {
-    read: ElementRef,
+
+  protected readonly compiledTemplate = resource({
+    request: this.template,
+    loader: async ({ request: template }) =>
+      await this.compileTemplate(template),
   });
 
   constructor() {
-    effect(() => {
-      this.compileTemplate(this.template());
-    });
-
     this.activatedRoute.queryParams.subscribe((params) => {
       if (params['template']) {
         this.selectCustom();
@@ -177,12 +179,14 @@ export class AppComponent {
 
   async compileTemplate(template: string) {
     const { output, errors } = await compileFormatAndHighlight(template);
-    this.compilerOutput().nativeElement.innerHTML = output;
     this.errors.set(
       errors?.map((e) => {
         return { message: e.msg, line: e.span.start.line };
       }) ?? [],
     );
+
+    // the output contains inline styles, so we need to trust it
+    return { output: this.sanitzer.bypassSecurityTrustHtml(output), errors };
   }
 
   async pretty() {

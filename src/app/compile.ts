@@ -1,5 +1,5 @@
 import * as ng from '@angular/compiler';
-import { HighlighterGeneric, getHighlighter } from 'shiki';
+import { HighlighterGeneric, createHighlighter } from 'shiki';
 
 import { formatJs } from './prettier';
 import { Context, Printer } from './printer';
@@ -7,7 +7,7 @@ import { Context, Printer } from './printer';
 let highlighter: HighlighterGeneric<any, any>;
 
 export async function initHightlighter() {
-  highlighter = await getHighlighter({
+  highlighter = await createHighlighter({
     themes: ['github-dark'],
     langs: ['javascript'],
   });
