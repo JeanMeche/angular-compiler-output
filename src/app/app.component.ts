@@ -1,14 +1,11 @@
 import { CdkMenuModule } from '@angular/cdk/menu';
 import {
   Component,
-  effect,
-  ElementRef,
   HostListener,
   inject,
   resource,
   signal,
   VERSION,
-  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -19,13 +16,15 @@ import { formatAngularTemplate } from './prettier';
 import { Template, templates } from './templates';
 import { unzip, zip } from './zip';
 import { DomSanitizer } from '@angular/platform-browser';
+import { JsonPipe } from '@angular/common';
+import { JsonViewComponent, JsonViewModule } from 'nxt-json-view';
 
 // Please don't blame for what you're gonna read
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [FormsModule, CdkMenuModule, MatIcon],
+  imports: [FormsModule, CdkMenuModule, MatIcon, JsonViewModule],
   template: `
     <header>Angular Template Compiler - based on {{ version }}</header>
     <main>
@@ -94,6 +93,11 @@ import { DomSanitizer } from '@angular/platform-browser';
       <code>renderFlag: 1=create, 2=update</code>
 
       <hr />
+      -
+      <!-- <pre><code>{{ details() | json }}</code></pre> -->
+      -
+      <nxt-json-view [data]="details()" [levelOpen]="5"></nxt-json-view>
+
       <footer>
         <div>
           <h2>About</h2>
@@ -152,6 +156,7 @@ export class AppComponent {
   protected readonly template = signal(templates[0].content);
   protected readonly errors = signal<{ message: string; line: number }[]>([]);
   protected readonly currentTemplate = signal(templates[0].label);
+  protected readonly details = signal<any>(null);
 
   protected readonly compiledTemplate = resource({
     request: this.template,
@@ -178,7 +183,9 @@ export class AppComponent {
   }
 
   async compileTemplate(template: string) {
-    const { output, errors } = await compileFormatAndHighlight(template);
+    const { output, errors, details } =
+      await compileFormatAndHighlight(template);
+    this.details.set(Object.fromEntries(details.entries()));
     this.errors.set(
       errors?.map((e) => {
         return { message: e.msg, line: e.span.start.line };
