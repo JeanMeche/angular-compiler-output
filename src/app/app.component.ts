@@ -1,14 +1,11 @@
 import { CdkMenuModule } from '@angular/cdk/menu';
 import {
   Component,
-  effect,
-  ElementRef,
   HostListener,
   inject,
   resource,
   signal,
   VERSION,
-  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';

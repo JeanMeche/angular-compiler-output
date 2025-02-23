@@ -138,7 +138,7 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   }
 
   visitTaggedTemplateExpr(
-    ast: ng.TaggedTemplateExpr,
+    ast: ng.TaggedTemplateLiteralExpr,
     context: Context,
   ): string {
     throw new Error('only important for i18n');
@@ -454,6 +454,27 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
       UNARY_OPERATORS.get(ast.operator)! +
       ast.expr.visitExpression(this, context)
     );
+  }
+
+  visitTaggedTemplateLiteralExpr(ast: ng.TaggedTemplateLiteralExpr, context: any) {
+    throw new Error('Method not implemented.');
+  }
+
+  visitTemplateLiteralExpr(ast: ng.TemplateLiteralExpr, context: any) {
+    let str = '`'; 
+    for (let i = 0; i < ast.elements.length; i++) {
+      str += ast.elements[i].visitExpression(this, this);
+      const expression = i < ast.expressions.length ? ast.expressions[i] : null;
+      if (expression !== null) {
+        str += '${' + expression.visitExpression(this, this) + '}';
+      }
+    }
+    str += '`';
+    return str; 
+  }
+
+  visitTemplateLiteralElementExpr(ast: ng.TemplateLiteralElementExpr, context: any) {
+    return ast.text;
   }
 
   private visitStatements(

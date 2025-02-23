@@ -72,6 +72,7 @@ export function compileTemplate(templateStr: string): CompileOutput {
       usesInheritance: false,
       viewProviders: null,
       viewQueries: [],
+      relativeTemplatePath: '',
     },
     constantPool,
     ng.makeBindingParser(ng.DEFAULT_INTERPOLATION_CONFIG),
