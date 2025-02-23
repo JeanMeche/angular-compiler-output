@@ -9,6 +9,7 @@ import { ifThenElseTemplate } from "./if-then-else";
 import { nestedNodesTemplate } from "./nested-nodes";
 import { NgModelTemplate } from "./ng-model";
 import { simpleAtLet } from "./simple-at-let";
+import { templateLiteral } from "./template-literal";
 
 export type Template = Record<'label' | 'content', string>;
 
@@ -24,4 +25,5 @@ export const templates: Template[] = [
   { label: 'child component', content: childComponentTemplate },
   { label: 'simple @let', content: simpleAtLet},
   { label: 'double binding (banna in a box)', content: bananaBoxTemplate },
+  { label: 'template literal', content: templateLiteral },
 ];
