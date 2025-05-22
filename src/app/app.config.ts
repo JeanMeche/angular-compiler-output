@@ -1,9 +1,8 @@
 import {
   ApplicationConfig,
   inject,
-  provideExperimentalZonelessChangeDetection,
+  provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { initHightlighter } from './compile';
 import { MatIconRegistry } from '@angular/material/icon';
@@ -12,8 +11,7 @@ import { provideEnvironmentInitializer } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalZonelessChangeDetection(),
-    provideAnimationsAsync(),
+    provideZonelessChangeDetection(),
     provideRouter([],withComponentInputBinding()),
     provideAppInitializer(async () => await initHightlighter()),
     provideEnvironmentInitializer(() => {

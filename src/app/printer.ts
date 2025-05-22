@@ -456,12 +456,15 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     );
   }
 
-  visitTaggedTemplateLiteralExpr(ast: ng.TaggedTemplateLiteralExpr, context: any) {
+  visitTaggedTemplateLiteralExpr(
+    ast: ng.TaggedTemplateLiteralExpr,
+    context: any,
+  ) {
     throw new Error('Method not implemented.');
   }
 
   visitTemplateLiteralExpr(ast: ng.TemplateLiteralExpr, context: any) {
-    let str = '`'; 
+    let str = '`';
     for (let i = 0; i < ast.elements.length; i++) {
       str += ast.elements[i].visitExpression(this, this);
       const expression = i < ast.expressions.length ? ast.expressions[i] : null;
@@ -470,11 +473,21 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
       }
     }
     str += '`';
-    return str; 
+    return str;
   }
 
-  visitTemplateLiteralElementExpr(ast: ng.TemplateLiteralElementExpr, context: any) {
+  visitTemplateLiteralElementExpr(
+    ast: ng.TemplateLiteralElementExpr,
+    context: any,
+  ) {
     return ast.text;
+  }
+
+  visitVoidExpr(ast: ng.VoidExpr, context: any) {
+    return 'void ' + ast.expr.visitExpression(this, context);
+  }
+  visitParenthesizedExpr(ast: ng.ParenthesizedExpr, context: any) {
+    return '(' + ast.expr.visitExpression(this, context); +  ')';
   }
 
   private visitStatements(

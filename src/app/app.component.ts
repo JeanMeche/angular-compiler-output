@@ -151,8 +151,8 @@ export class AppComponent {
   protected readonly currentTemplate = signal(templates[0].label);
 
   protected readonly compiledTemplate = resource({
-    request: this.template,
-    loader: async ({ request: template }) =>
+    params: this.template,
+    loader: async ({ params: template }) =>
       await this.compileTemplate(template),
   });
 
