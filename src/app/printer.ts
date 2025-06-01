@@ -374,7 +374,7 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     } else {
       body = ast.body.visitExpression(this, context);
     }
-    return `(${params}) => ${body}`;
+    return `(${params}) => (${body})`;
   }
 
   visitBinaryOperatorExpr(
