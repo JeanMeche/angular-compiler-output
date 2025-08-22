@@ -31,6 +31,7 @@ export function compileTemplate(templateStr: string): CompileOutput {
       name: CMP_NAME,
       isStandalone: true,
       selector: 'test-cmp',
+      hasDirectiveDependencies: false,
       host: {
         attributes: {},
         listeners: {},

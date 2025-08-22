@@ -104,26 +104,6 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     return ast.name;
   }
 
-  visitWriteVarExpr(expr: ng.WriteVarExpr, context: Context): string {
-    const assignment = `${expr.name} = ${expr.value.visitExpression(this, context)}`;
-    return context.isStatement ? assignment : `(${assignment})`;
-  }
-
-  visitWriteKeyExpr(expr: ng.WriteKeyExpr, context: Context): string {
-    const exprContext = context.withExpressionMode;
-    const receiver = expr.receiver.visitExpression(this, exprContext);
-    const key = expr.index.visitExpression(this, exprContext);
-    const value = expr.value.visitExpression(this, exprContext);
-    const assignment = `${receiver}[${key}] = ${value}`;
-    return context.isStatement ? assignment : `(${assignment})`;
-  }
-
-  visitWritePropExpr(expr: ng.WritePropExpr, context: Context): string {
-    const receiver = expr.receiver.visitExpression(this, context);
-    const value = expr.value.visitExpression(this, context);
-    return `${receiver}.${expr.name} = ${value}`;
-  }
-
   visitInvokeFunctionExpr(
     ast: ng.InvokeFunctionExpr,
     context: Context,
@@ -487,7 +467,7 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     return 'void ' + ast.expr.visitExpression(this, context);
   }
   visitParenthesizedExpr(ast: ng.ParenthesizedExpr, context: any) {
-    return '(' + ast.expr.visitExpression(this, context); +  ')';
+    return '(' + ast.expr.visitExpression(this, context) + ')';
   }
 
   private visitStatements(
