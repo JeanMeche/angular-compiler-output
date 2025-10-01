@@ -34,6 +34,7 @@ const BINARY_OPERATORS = new Map<ng.BinaryOperator, string>([
   [ng.BinaryOperator.Or, '||'],
   [ng.BinaryOperator.Plus, '+'],
   [ng.BinaryOperator.NullishCoalesce, '??'],
+  [ng.BinaryOperator.Assign, '='],
 ]);
 
 export class Context {
