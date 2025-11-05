@@ -16,6 +16,7 @@ const UNARY_OPERATORS = new Map<ng.UnaryOperator, string>([
 ]);
 
 const BINARY_OPERATORS = new Map<ng.BinaryOperator, string>([
+  [ng.BinaryOperator.Assign, '='],
   [ng.BinaryOperator.And, '&&'],
   [ng.BinaryOperator.Bigger, '>'],
   [ng.BinaryOperator.BiggerEquals, '>='],
@@ -34,6 +35,16 @@ const BINARY_OPERATORS = new Map<ng.BinaryOperator, string>([
   [ng.BinaryOperator.Or, '||'],
   [ng.BinaryOperator.Plus, '+'],
   [ng.BinaryOperator.NullishCoalesce, '??'],
+
+  [ng.BinaryOperator.AdditionAssignment, '+='],
+  [ng.BinaryOperator.SubtractionAssignment, '-='],
+  [ng.BinaryOperator.MultiplicationAssignment, '*='],
+  [ng.BinaryOperator.DivisionAssignment, '/='],
+  [ng.BinaryOperator.RemainderAssignment, '%='],
+  [ng.BinaryOperator.ExponentiationAssignment, '**='],
+  [ng.BinaryOperator.AndAssignment, '&&='],
+  [ng.BinaryOperator.OrAssignment, '||='],
+  [ng.BinaryOperator.NullishCoalesceAssignment, '??='],
 ]);
 
 export class Context {
@@ -468,6 +479,13 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   }
   visitParenthesizedExpr(ast: ng.ParenthesizedExpr, context: any) {
     return '(' + ast.expr.visitExpression(this, context) + ')';
+  }
+
+  visitRegularExpressionLiteral(
+    ast: ng.RegularExpressionLiteralExpr,
+    context: any,
+  ) {
+    return `/${ast.body}/${ast.flags || ''}`;
   }
 
   private visitStatements(

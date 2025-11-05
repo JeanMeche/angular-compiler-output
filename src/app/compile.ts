@@ -53,7 +53,6 @@ export function compileTemplate(templateStr: string): CompileOutput {
         mode: ng.DeferBlockDepsEmitMode.PerComponent,
       },
       i18nUseExternalIds: false,
-      interpolation: ng.DEFAULT_INTERPOLATION_CONFIG,
       isSignal: false,
       providers: null,
       queries: [],
@@ -76,7 +75,7 @@ export function compileTemplate(templateStr: string): CompileOutput {
       relativeTemplatePath: '',
     },
     constantPool,
-    ng.makeBindingParser(ng.DEFAULT_INTERPOLATION_CONFIG),
+    ng.makeBindingParser(),
   );
 
   const printer = new Printer();
