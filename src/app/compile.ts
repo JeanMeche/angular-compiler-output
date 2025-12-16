@@ -60,7 +60,6 @@ export function compileTemplate(templateStr: string): CompileOutput {
       template,
       encapsulation: ng.ViewEncapsulation.Emulated,
       exportAs: null,
-      fullInheritance: false,
       changeDetection: null,
       relativeContextFilePath: 'template.html',
       type: {
