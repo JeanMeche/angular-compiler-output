@@ -408,11 +408,15 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
 
   visitLiteralMapExpr(ast: ng.LiteralMapExpr, context: Context): string {
     const properties: string[] = ast.entries.map((entry) => {
-      let key = entry.key;
-      if (entry.quoted) {
-        key = `'` + key.replaceAll(`'`, `\\'`) + `'`;
+      if (entry instanceof ng.LiteralMapPropertyAssignment) {
+        let key = entry.key;
+        if (entry.quoted) {
+          key = `'` + key.replaceAll(`'`, `\\'`) + `'`;
+        }
+        return key + ': ' + entry.value.visitExpression(this, context);
+      } else {
+        return '...' + entry.expression.visitExpression(this, context);
       }
-      return key + ': ' + entry.value.visitExpression(this, context);
     });
     return this.setSourceMapRange(
       '{' + properties.join(', ') + '}',
@@ -486,6 +490,10 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
     context: any,
   ) {
     return `/${ast.body}/${ast.flags || ''}`;
+  }
+
+  visitSpreadElementExpr(ast: ng.SpreadElementExpr, context: any) {
+    return '...' + ast.expression.visitExpression(this, ast);
   }
 
   private visitStatements(
