@@ -1,10 +1,17 @@
 /* You can add global styles to this file, and also import other style files */
 /* Add application styles & imports to this file! */
 
-// Following styles have been mostly borrowed from the angular.dev style
 @use "styles/button";
 @use "styles/colors";
 @import "@angular/cdk/overlay-prebuilt.css";
+
+:root {
+  @include colors.root-definitions();
+  --font-family:
+    "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --page-background: #fbfbfb;
+}
 
 @include button.button();
 
@@ -12,62 +19,325 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: var(--font-family);
+  background-color: var(--page-background);
+  background-image:
+    radial-gradient(
+      at 0% 0%,
+      color-mix(in srgb, var(--vivid-pink), transparent 90%) 0px,
+      transparent 50%
+    ),
+    radial-gradient(
+      at 100% 0%,
+      color-mix(in srgb, var(--bright-blue), transparent 90%) 0px,
+      transparent 50%
+    );
+  background-attachment: fixed;
+  color: var(--gray-900);
 }
 
 header {
   text-align: center;
-  font-size: 16pt;
-  font-weight: bold;
-  padding: 8px;
-  margin-bottom: 8px;
+  font-size: 1.5rem;
+  font-weight: 700;
+  padding: 1.5rem;
   color: white;
   background: var(--red-to-pink-to-purple-horizontal-gradient);
-}
-
-body {
-  font-family: sans-serif;
+  box-shadow: 0 4px 20px -5px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
 }
 
 main {
-  padding: 18px 18px 32px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 4rem;
 }
 
-h2 {
-  margin-top: 0;
+.playground-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .playground-container {
+    flex-direction: row;
+    align-items: flex-start;
+
+    section {
+      flex: 1;
+      width: 0; // Fix flexbox overflow issues
+      min-width: 0;
+    }
+  }
 }
 
 section {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-hr {
-  border-radius: 8px;
-  height: 8px;
-  background: var(--red-to-pink-to-purple-horizontal-gradient);
-  border: none;
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.02em;
 }
 
-.error {
-  color: var(--hot-red);
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  border: 1px solid var(--gray-200);
+
+  h2 {
+    margin: 0;
+    margin-right: auto;
+    font-size: 1.25rem;
+  }
 }
 
 textarea {
-  flex: 1;
+  font-family:
+    "SF Mono", "Monaco", "Menlo", "Consolas", "Ubuntu Mono", monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 1.5rem;
+  border-radius: 16px;
+  border: 1px solid var(--gray-200);
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  resize: vertical;
+  min-height: 350px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  color: var(--gray-800);
+
+  &:focus {
+    outline: none;
+    border-color: var(--bright-blue);
+    box-shadow: 0 0 0 4px
+      color-mix(in srgb, var(--bright-blue), transparent 90%);
+  }
 }
 
-pre {
-  padding: 12px;
+.output-card {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--gray-200);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+
+  h2 {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gray-600);
+  }
+
+  .output-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--gray-100);
+    background: var(--gray-50);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .render-info {
+    font-family: monospace;
+    font-size: 0.8em;
+    color: var(--gray-500);
+  }
+}
+
+.output-container {
+  padding: 1.5rem;
+  overflow-x: auto;
+  min-height: 100px;
+  font-family:
+    "SF Mono", "Monaco", "Menlo", "Consolas", "Ubuntu Mono", monospace;
+  font-size: 14px;
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gray-200), transparent);
+  margin: 3rem 0;
+}
+
+code {
+  display: block;
+  padding: 0.2rem 0.4rem;
+  border-radius: 6px;
+  font-size: 0.9em;
+  color: var(--french-violet);
+  font-family:
+    "SF Mono", "Monaco", "Menlo", "Consolas", "Ubuntu Mono", monospace;
+  width: 100%;
+
+  .line {
+    display: inline-block;
+    width: 100%;
+    &:hover {
+      background: var(--subtle-purple);
+    }
+  }
+}
+
+.error {
+  background: #fff5f5;
+  border: 1px solid color-mix(in srgb, var(--hot-red), transparent 80%);
+  border-left: 4px solid var(--hot-red);
+  padding: 1rem;
+  margin-bottom: 1.5rem;
   border-radius: 8px;
+  color: var(--gray-900);
+  font-family:
+    "SF Mono", "Monaco", "Menlo", "Consolas", "Ubuntu Mono", monospace;
+  font-size: 0.9rem;
+}
+
+footer {
+  margin-top: 4rem;
+  padding: 2.5rem;
+  background: linear-gradient(to bottom, white, var(--gray-50));
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+
+  h2 {
+    font-size: 1.1rem;
+    color: var(--gray-900);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    color: var(--gray-600);
+    line-height: 1.7;
+    max-width: 65ch;
+  }
+}
+
+// Custom Select/Menu Styling
+.adev-template-select {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--gray-600);
+  }
+
+  button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--gray-300);
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--gray-700);
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    &:hover {
+      border-color: var(--bright-blue);
+      color: var(--bright-blue);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    mat-icon {
+      font-size: 1.25rem;
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+  }
+}
+
+// Menu Dropdown styling (target Angular Material/CDK classes)
+// Note: CDK overlay is attached to body, so we might need global styles or view encapsulation: none
+.adev-template-dropdown {
+  background: white;
+  border-radius: 12px;
+  padding: 0.5rem;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--gray-200);
+  min-width: 200px;
+  list-style: none;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  li {
+    button {
+      width: 100%;
+      text-align: left;
+      padding: 0.6rem 1rem;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: var(--gray-700);
+      transition: all 0.1s;
+      font-weight: 500;
+
+      &:hover {
+        background: var(--subtle-purple);
+        color: var(--bright-blue);
+      }
+    }
+  }
+}
+
+/* Syntax Highlighting overrides */
+pre {
+  margin: 0;
 }
 
 .shiki {
+  margin: 0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+
   code {
     counter-reset: step;
     counter-increment: step 0;
+    font-family:
+      "SF Mono", "Monaco", "Menlo", "Consolas", "Ubuntu Mono", monospace;
   }
 
   code .line::before {
@@ -77,105 +347,31 @@ pre {
     margin-right: 1.5rem;
     display: inline-block;
     text-align: right;
-    color: rgba(115, 138, 148, 0.4);
-  }
-}
-
-.controls {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  justify-content: space-between;
-  gap: 8px;
-
-  option {
-    padding: 8px;
+    color: var(--gray-400);
+    user-select: none;
+    font-size: 0.85em;
   }
 }
 
 .twitter {
   background: var(--red-to-pink-to-purple-horizontal-gradient);
+  -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-decoration: underline;
+  display: inline-block;
+  font-weight: 700;
 
   a {
-    font-weight: bold;
-  }
-}
+    font-weight: 700;
+    color: var(--vivid-pink);
+    text-decoration: none;
 
-.adev-template-select {
-  margin-block-end: 0.5rem;
-
-  label {
-    color: var(--quaternary-contrast);
-    font-size: 0.875rem;
-    margin-block-end: 0.3rem;
-    margin-inline-start: 0.45rem;
-    display: block;
-  }
-
-  // cdk select button
-  button {
-    font-size: 0.875rem;
-    border: 1px solid var(--senary-contrast);
-    border-radius: 0.25rem;
-    width: 200px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-block: 0.5rem;
-    font-weight: 400;
-    transition: border 0.3s ease;
-    span {
-      color: var(--primary-contrast);
-      transition: color 0.3s ease;
-      margin-inline-start: 0.1rem;
-    }
-
-    docs-icon {
-      font-size: 1.3rem;
-      color: var(--quaternary-contrast);
-      transition: color 0.3s ease;
-    }
-  }
-}
-
-// select dropdown
-.adev-template-dropdown {
-  border: 1px solid var(--senary-contrast);
-  border-radius: 0.25rem;
-  padding: 0;
-  transform: translateY(-0.7rem);
-
-  li {
-    list-style: none;
-    width: 198px;
-    box-sizing: border-box;
-
-    button {
-      background: var(--page-background);
-      font-size: 0.875rem;
-      width: 100%;
-      text-align: left;
-      padding-block: 0.5rem;
-      color: var(--quaternary-contrast);
-      transition:
-        color 0.3s ease,
-        background 0.3s ease;
-      font-weight: 400;
-
-      &:hover {
-        background: var(--senary-contrast);
-        color: var(--primary-contrast);
-      }
+    &:hover {
+      text-decoration: underline;
     }
   }
 }
 
 .mat-typography {
-  font:
-    400 1rem / 1.5rem Roboto,
-    sans-serif;
-  letter-spacing: 0.031rem;
+  font-family: var(--font-family);
 }

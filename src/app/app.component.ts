@@ -8,14 +8,14 @@ import {
   VERSION,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
+import { ActivatedRoute, Router } from '@angular/router';
 
+import { DomSanitizer } from '@angular/platform-browser';
 import { compileFormatAndHighlight } from './compile';
 import { formatAngularTemplate } from './prettier';
 import { Template, templates } from './templates';
 import { unzip, zip } from './zip';
-import { DomSanitizer } from '@angular/platform-browser';
 
 // Please don't blame for what you're gonna read
 
@@ -26,71 +26,84 @@ import { DomSanitizer } from '@angular/platform-browser';
   template: `
     <header>Angular Template Compiler - based on {{ version }}</header>
     <main>
-      <section>
-        <div class="controls">
-          <h2>Template</h2>
+      <div class="playground-container">
+        <section>
+          <div class="controls">
+            <h2>Template</h2>
 
-          <div class="adev-playground-header">
-            <div class="adev-template-select">
-              <label for="playgroundTemplate">Select a template</label>
-              <button [cdkMenuTriggerFor]="templatesMenu">
-                <span>{{ currentTemplate() }}</span>
-                <mat-icon>expand_more</mat-icon>
-              </button>
+            <div class="adev-playground-header">
+              <div class="adev-template-select">
+                <label for="playgroundTemplate">Select a template</label>
+                <button [cdkMenuTriggerFor]="templatesMenu">
+                  <span>{{ currentTemplate() }}</span>
+                  <mat-icon>expand_more</mat-icon>
+                </button>
+              </div>
             </div>
+
+            <ng-template #templatesMenu>
+              <ul class="adev-template-dropdown" cdkMenu>
+                @for (template of templates; track $index) {
+                  <li>
+                    <button
+                      cdkMenuItem
+                      type="button"
+                      (click)="selectTemplate(template)"
+                    >
+                      <span>{{ template.label }}</span>
+                    </button>
+                  </li>
+                }
+              </ul>
+            </ng-template>
+
+            <button
+              class="docs-primary-btn"
+              [attr.text]="'Prettify ✨'"
+              (click)="pretty()"
+            >
+              Prettify
+            </button>
+            <button
+              class="docs-primary-btn"
+              [attr.text]="'Share Example'"
+              (click)="save()"
+            >
+              Share example
+            </button>
           </div>
-
-          <ng-template #templatesMenu>
-            <ul class="adev-template-dropdown" cdkMenu>
-              @for (template of templates; track $index) {
-                <li>
-                  <button
-                    cdkMenuItem
-                    type="button"
-                    (click)="selectTemplate(template)"
-                  >
-                    <span>{{ template.label }}</span>
-                  </button>
-                </li>
-              }
-            </ul>
-          </ng-template>
-
-          <button
-            class="docs-primary-btn"
-            [attr.text]="'Prettify ✨'"
-            (click)="pretty()"
-          >
-            Prettify
-          </button>
-          <button
-            class="docs-primary-btn"
-            [attr.text]="'Share Example'"
-            (click)="save()"
-          >
-            Share example
-          </button>
-        </div>
-        <textarea
-          cols="80"
-          rows="12"
-          [(ngModel)]="template"
-          (keydown)="selectCustom()"
-        ></textarea>
-      </section>
-      <hr />
-      <h2>The compiled template</h2>
-      @if (errors().length > 0) {
-        <section class="error">
-          @for (error of errors(); track error) {
-            <div>L{{ error.line }}: {{ error.message }}</div>
-          }
+          <textarea
+            cols="80"
+            rows="12"
+            [(ngModel)]="template"
+            (keydown)="selectCustom()"
+          ></textarea>
         </section>
-      }
-      <div [innerHTML]="compiledTemplate.value()?.output"></div>
-      <code>renderFlag: 1=create, 2=update</code>
 
-      <hr />
+        <section>
+          <div class="output-card">
+            <!-- New class -->
+            <div class="output-header">
+              <h2>The compiled template</h2>
+              <div class="render-info">renderFlag: 1=create, 2=update</div>
+            </div>
+
+            @if (errors().length > 0) {
+              <div class="error" style="margin: 1.5rem 1.5rem 0;">
+                @for (error of errors(); track error) {
+                  <div>L{{ error.line }}: {{ error.message }}</div>
+                }
+              </div>
+            }
+
+            <div
+              class="output-container"
+              [innerHTML]="compiledTemplate.value()?.output"
+            ></div>
+          </div>
+        </section>
+      </div>
+
       <footer>
         <div>
           <h2>About</h2>
@@ -123,18 +136,21 @@ import { DomSanitizer } from '@angular/platform-browser';
           </p>
         </div>
 
-        <br /><br /><br />
-        <p>
-          Repo
-          <a href="https://github.com/jeanmeche/angular-compiler-output"
-            >here</a
-          >
-        </p>
-        <span class="twitter">
-          Built by
-          <a href="https://twitter.com/Jean__meche">&#64;JeanMeche</a> with the
-          help of <a href="https://twitter.com/synalx">&#64;synalx</a>
-        </span>
+        <div
+          style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid var(--gray-200); display: flex; gap: 1.5rem; color: var(--gray-500); font-size: 0.9em;"
+        >
+          <p style="margin: 0;">
+            Repo
+            <a href="https://github.com/jeanmeche/angular-compiler-output"
+              >here</a
+            >
+          </p>
+          <span class="twitter" style="margin-left: auto;">
+            Built by
+            <a href="https://twitter.com/Jean__meche">&#64;JeanMeche</a> with
+            the help of <a href="https://twitter.com/synalx">&#64;synalx</a>
+          </span>
+        </div>
       </footer>
     </main>
   `,
