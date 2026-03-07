@@ -14,8 +14,13 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v4
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
+        with:
+          version: 10.27.0
+
       - name: Clean install dependencies
-        run: npm ci --force
+        run: pnpm install --frozen-lockfile
 
       - name: Build app
         run: npm run build

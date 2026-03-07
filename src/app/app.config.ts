@@ -1,18 +1,16 @@
 import {
   ApplicationConfig,
   inject,
-  provideZonelessChangeDetection,
+  provideAppInitializer,
+  provideEnvironmentInitializer,
 } from '@angular/core';
+import { MatIconRegistry } from '@angular/material/icon';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { initHightlighter } from './compile';
-import { MatIconRegistry } from '@angular/material/icon';
-import { provideAppInitializer } from '@angular/core';
-import { provideEnvironmentInitializer } from '@angular/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZonelessChangeDetection(),
-    provideRouter([],withComponentInputBinding()),
+    provideRouter([], withComponentInputBinding()),
     provideAppInitializer(async () => await initHightlighter()),
     provideEnvironmentInitializer(() => {
       const matIconReg = inject(MatIconRegistry);
