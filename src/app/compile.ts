@@ -73,6 +73,7 @@ export function compileTemplate(templateStr: string): CompileOutput {
       viewQueries: [],
       relativeTemplatePath: '',
       controlCreate: null,
+      legacyOptionalChaining: false,
     },
     constantPool,
     ng.makeBindingParser(),

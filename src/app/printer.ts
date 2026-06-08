@@ -387,7 +387,11 @@ export class Printer implements ng.ExpressionVisitor, ng.StatementVisitor {
   }
 
   visitReadPropExpr(ast: ng.ReadPropExpr, context: Context): string {
-    return ast.receiver.visitExpression(this, context) + '.' + ast.name;
+    return (
+      ast.receiver.visitExpression(this, context) +
+      (ast.isOptional ? '?.' : '.') +
+      ast.name
+    );
   }
 
   visitReadKeyExpr(ast: ng.ReadKeyExpr, context: Context): string {

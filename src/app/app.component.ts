@@ -6,6 +6,7 @@ import {
   resource,
   signal,
   VERSION,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -23,6 +24,7 @@ import { unzip, zip } from './zip';
   selector: 'app-root',
   standalone: true,
   imports: [FormsModule, CdkMenuModule, MatIcon],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: `
     <header>Angular Template Compiler - based on {{ version }}</header>
     <main>
@@ -98,7 +100,9 @@ import { unzip, zip } from './zip';
 
             <div
               class="output-container"
-              [innerHTML]="compiledTemplate.value()?.output"
+              [innerHTML]="
+                $safeNavigationMigration(compiledTemplate.value()?.output)
+              "
             ></div>
           </div>
         </section>
