@@ -1,38 +1,46 @@
-on: push
+on:
+  push:
+    branches:
+      - main
+
 name: 🚀 Deploy website on push
+
+permissions:
+  contents: write
+
 jobs:
   web-deploy:
     name: 🎉 Deploy
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     steps:
-      - name: Setup Node.js for use with actions
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
       - name: 🚚 Get latest code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v3 # docs https://pnpm.io/continuous-integration#github-actions
+        uses: pnpm/action-setup@v6.0.10
         with:
           version: 10.27.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7.0.0
+        with:
+          node-version: 24
+          cache: pnpm
 
       - name: Clean install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Build app
-        run: npm run build
+        run: pnpm build
 
       - name: Rewrite base href
-        uses: SteveSandersonMS/ghaction-rewrite-base-href@v1
+        uses: SteveSandersonMS/ghaction-rewrite-base-href@v1.1.0
         with:
           html_path: ./dist/angular-compiler-output/browser/index.html
           base_href: /angular-compiler-output/
 
       - name: deploy
-        uses: peaceiris/actions-gh-pages@v4
+        uses: peaceiris/actions-gh-pages@v4.1.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/angular-compiler-output/browser
