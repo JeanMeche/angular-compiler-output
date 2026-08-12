@@ -1,12 +1,12 @@
 import { CdkMenuModule } from '@angular/cdk/menu';
 import {
+  ChangeDetectionStrategy,
   Component,
   HostListener,
   inject,
   resource,
   signal,
   VERSION,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -87,7 +87,6 @@ import { unzip, zip } from './zip';
             <!-- New class -->
             <div class="output-header">
               <h2>The compiled template</h2>
-              <div class="render-info">renderFlag: 1=create, 2=update</div>
             </div>
 
             @if (errors().length > 0) {

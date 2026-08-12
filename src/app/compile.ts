@@ -74,6 +74,7 @@ export function compileTemplate(templateStr: string): CompileOutput {
       relativeTemplatePath: '',
       controlCreate: null,
       legacyOptionalChaining: false,
+      foreignImports: null,
     },
     constantPool,
     ng.makeBindingParser(),
@@ -100,6 +101,14 @@ export async function compileFormatAndHighlight(
   const { output: unformated, errors } = compileTemplate(template);
 
   const formatted = await formatJs(unformated);
+  let annotated = formatted.replaceAll(
+    'if (rf & 1) {',
+    'if (rf & 1) { // creation mode',
+  );
+  annotated = annotated.replaceAll(
+    'if (rf & 2) {',
+    'if (rf & 2) { // update mode',
+  );
   const highlighted = highlighter.codeToHtml(formatted, {
     lang: 'javascript',
     theme: 'github-dark',
